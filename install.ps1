@@ -6,8 +6,22 @@ New-Item -ItemType Directory -Force -Path $BinDir | Out-Null
 
 $Base = "https://github.com/sshehrozali/chatsafe/releases/latest/download"
 $Zip = Join-Path $BinDir "chatsafe.zip"
-Write-Host "Downloading chatsafe-windows-amd64.zip ..."
-Invoke-WebRequest -Uri "$Base/chatsafe-windows-amd64.zip" -OutFile $Zip
+$Stable = "$Base/chatsafe-windows-amd64.zip"
+try {
+    Write-Host "Downloading chatsafe-windows-amd64.zip ..."
+    Invoke-WebRequest -Uri $Stable -OutFile $Zip -ErrorAction Stop
+} catch {
+    Write-Host "Stable URL missing; resolving asset from GitHub API ..."
+    $rel = Invoke-RestMethod -Uri "https://api.github.com/repos/sshehrozali/chatsafe/releases/latest" -Headers @{ "User-Agent" = "chatsafe-install" }
+    $asset = $rel.assets | Where-Object { $_.name -eq "chatsafe-windows-amd64.zip" } | Select-Object -First 1
+    if (-not $asset) {
+        $asset = $rel.assets | Where-Object { $_.name -match '^chatsafe_[0-9.]+_windows_amd64\.zip$' } | Select-Object -First 1
+    }
+    if (-not $asset) {
+        throw "No Windows amd64 zip in latest release. See https://github.com/sshehrozali/chatsafe/releases"
+    }
+    Invoke-WebRequest -Uri $asset.browser_download_url -OutFile $Zip
+}
 Expand-Archive -Path $Zip -DestinationPath $BinDir -Force
 Remove-Item $Zip
 

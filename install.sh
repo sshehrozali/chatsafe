@@ -24,9 +24,32 @@ arm64 | aarch64) arch=arm64 ;;
 	;;
 esac
 
-URL="https://github.com/sshehrozali/chatsafe/releases/latest/download/chatsafe-${os}-${arch}.tar.gz"
-echo "Downloading ${URL} ..."
-curl -fsSL "$URL" -o "$BIN_DIR/chatsafe.tgz"
+STABLE_URL="https://github.com/sshehrozali/chatsafe/releases/latest/download/chatsafe-${os}-${arch}.tar.gz"
+OUT="$BIN_DIR/chatsafe.tgz"
+
+if curl -fsSL "$STABLE_URL" -o "$OUT" 2>/dev/null; then
+	echo "Downloaded: chatsafe-${os}-${arch}.tar.gz"
+else
+	echo "Stable URL not on latest release yet; resolving asset from GitHub API ..."
+	JSON=$(curl -fsSL \
+		-H "Accept: application/vnd.github+json" \
+		-H "User-Agent: chatsafe-install" \
+		"https://api.github.com/repos/sshehrozali/chatsafe/releases/latest")
+	# Prefer stable name in API, else versioned chatsafe_X.Y.Z_os_arch.tar.gz
+	URL=$(printf '%s' "$JSON" | tr '"' '\n' | grep -E '^https://github\.com/.*chatsafe-'"${os}"'-'"${arch}"'\.tar\.gz$' | head -n 1)
+	if [ -z "$URL" ]; then
+		URL=$(printf '%s' "$JSON" | tr '"' '\n' | grep -E '^https://github\.com/.*chatsafe_[^_]+_'"${os}"'_'"${arch}"'\.tar\.gz$' | head -n 1)
+	fi
+	if [ -z "$URL" ]; then
+		echo "install.sh: no ${os}/${arch} .tar.gz in latest release." >&2
+		echo "Open https://github.com/sshehrozali/chatsafe/releases or cut a new release with GoReleaser." >&2
+		rm -f "$OUT"
+		exit 1
+	fi
+	echo "Downloading ${URL} ..."
+	curl -fsSL "$URL" -o "$OUT"
+fi
+
 tar -xzf "$BIN_DIR/chatsafe.tgz" -C "$BIN_DIR"
 rm -f "$BIN_DIR/chatsafe.tgz"
 chmod +x "$BIN_DIR/chatsafe"
