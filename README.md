@@ -35,6 +35,24 @@ chatsafe
 
 Creates `backup/cursor-backup_YYYYMMDD_HHMMSS.tar.gz` in your **current working directory** (the `backup` folder is created if needed).
 
+### Examples
+
+```bash
+# Default: write backup/ under your current directory (e.g. run from home or a project folder)
+cd ~
+chatsafe
+```
+
+```bash
+# Save archives somewhere fixed (folder is created if needed)
+chatsafe -out ~/Documents/cursor-backups
+```
+
+```bash
+# Cursor data lives somewhere non-standard—point at the User folder explicitly
+chatsafe -cursor-user "/path/to/Cursor/User"
+```
+
 | Flag | What it does |
 |------|----------------|
 | `-out dir` | Where to save archives (default: `backup`) |
