@@ -67,15 +67,3 @@ Creates `backup/cursor-backup_YYYYMMDD_HHMMSS.tar.gz` (the `backup` folder is cr
 | `-out dir` | Where to save archives (default: `backup`) |
 | `-cursor-user path` | Override if Cursor’s data isn’t in the usual place on your system |
 | `-version` | Print version |
-
-**Release maintainers:** push a new tag to build binaries in CI:
-
-```bash
-make release-ci TAG=v1.0.1
-```
-
-## Develop
-
-```bash
-go test ./...
-```
