@@ -13,6 +13,9 @@ import (
 	"github.com/sshehrozali/chatsafe/internal/pack"
 )
 
+// version is set at link time by GoReleaser (-X main.version=...).
+var version = "dev"
+
 func defaultCursorUser() string {
 	home, err := os.UserHomeDir()
 	if err != nil {
@@ -26,7 +29,13 @@ func main() {
 
 	out := flag.String("out", "backup", "output directory for archives; created on first run, reused afterward (relative to cwd)")
 	cursorUser := flag.String("cursor-user", "", "path to Cursor User directory (default: ~/Library/Application Support/Cursor/User)")
+	showVersion := flag.Bool("version", false, "print version and exit")
 	flag.Parse()
+
+	if *showVersion {
+		fmt.Println(version)
+		return
+	}
 
 	if runtime.GOOS != "darwin" {
 		log.Fatal("chatsafe: backup is supported on macOS only (Cursor paths are platform-specific).")

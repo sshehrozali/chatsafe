@@ -19,6 +19,34 @@ Missing pieces are skipped; the archive only needs at least one of these to exis
 2. **macOS only** — paths are built for the standard Cursor layout on Mac.
 3. **Go 1.22+** if you use `go run` / `go build`.
 
+## Install prebuilt binary (GitHub Releases)
+
+Releases are published as **GitHub Releases** (versioned `.tar.gz` / `.zip` + `checksums.txt`). GitHub does not offer a separate “Packages” registry for plain CLI binaries; Releases is the usual way to ship them.
+
+1. Open **[Releases](https://github.com/sshehrozali/chatsafe/releases)** and download the archive for your OS and CPU (e.g. macOS Apple Silicon: `chatsafe_1.0.0_darwin_arm64.tar.gz`).
+2. Extract the `chatsafe` binary and run it (e.g. move it to a directory on your `PATH`).
+
+```bash
+# Example after extracting next to the binary:
+./chatsafe -version
+./chatsafe
+```
+
+With [GitHub CLI](https://cli.github.com/):
+
+```bash
+gh release download v1.0.0 --repo sshehrozali/chatsafe --pattern 'chatsafe_*_darwin_arm64.tar.gz'
+tar -xzf chatsafe_*_darwin_arm64.tar.gz
+./chatsafe -version
+```
+
+Maintainers: create a release by pushing an annotated tag; CI builds and uploads assets:
+
+```bash
+git tag -a v1.0.0 -m "chatsafe 1.0.0"
+git push origin v1.0.0
+```
+
 ## How to use
 
 Clone the repo and run from its root:
@@ -45,7 +73,8 @@ go build -o chatsafe ./cmd/chatsafe
 ### Options
 
 | Flag | Default | Meaning |
-|------|---------|--------|
+|------|---------|---------|
+| `-version` | — | Print release tag (or `dev` when built locally) and exit. |
 | `-out` | `backup` | Folder for `.tar.gz` files (relative to where you run the command). |
 | `-cursor-user` | `~/Library/Application Support/Cursor/User` | Override if your Cursor data lives somewhere else. |
 
