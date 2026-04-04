@@ -38,8 +38,10 @@ Optional custom folder (macOS/Linux):
 
 ## Usage
 
+Backups run only when you pass the **`backup`** subcommand:
+
 ```bash
-chatsafe
+chatsafe backup
 ```
 
 Creates `backup/cursor-backup_YYYYMMDD_HHMMSS.tar.gz` in your **current working directory** (the `backup` folder is created if needed).
@@ -47,23 +49,26 @@ Creates `backup/cursor-backup_YYYYMMDD_HHMMSS.tar.gz` in your **current working 
 ### Examples
 
 ```bash
-# Default: write backup/ under your current directory (e.g. run from home or a project folder)
+# Default output directory under your current directory
 cd ~
-chatsafe
+chatsafe backup
 ```
 
 ```bash
 # Save archives somewhere fixed (folder is created if needed)
-chatsafe -out ~/Documents/cursor-backups
+chatsafe backup -out ~/Documents/cursor-backups
 ```
 
 ```bash
 # Cursor data lives somewhere non-standard—point at the User folder explicitly
-chatsafe -cursor-user "/path/to/Cursor/User"
+chatsafe backup -cursor-user "/path/to/Cursor/User"
 ```
 
-| Flag | What it does |
-|------|----------------|
-| `-out dir` | Where to save archives (default: `backup`) |
+| Command / flag | What it does |
+|----------------|--------------|
+| `chatsafe backup` | Create a timestamped archive |
+| `-out dir` | Where to save archives (default: `backup`, relative to cwd) |
 | `-cursor-user path` | Override if Cursor’s data isn’t in the usual place on your system |
-| `-version` | Print version |
+| `chatsafe -version` | Print version (no `backup` needed) |
+
+Running `chatsafe` with no arguments prints a short usage message and exits.

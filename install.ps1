@@ -37,3 +37,4 @@ if ($UserPath -notlike "*$BinDir*") {
 
 Write-Host ""
 Write-Host "Done. Open a new PowerShell window, then run: chatsafe.exe -version"
+Write-Host "Create a backup: chatsafe backup"

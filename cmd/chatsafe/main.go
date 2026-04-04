@@ -30,7 +30,6 @@ func defaultCursorUser() string {
 		}
 		return ""
 	default:
-		// Linux and other Unix-like systems
 		if xdg := os.Getenv("XDG_CONFIG_HOME"); xdg != "" {
 			return filepath.Join(xdg, "Cursor", "User")
 		}
@@ -38,18 +37,33 @@ func defaultCursorUser() string {
 	}
 }
 
+func usage() {
+	fmt.Fprintln(os.Stderr, "usage: chatsafe backup [-out dir] [-cursor-user path]")
+	fmt.Fprintln(os.Stderr, "       chatsafe -version")
+}
+
 func main() {
 	log.SetFlags(0)
+	args := os.Args[1:]
 
-	out := flag.String("out", "backup", "output directory for archives; created on first run, reused afterward (relative to cwd)")
-	cursorUser := flag.String("cursor-user", "", "path to Cursor User directory (default: standard location for this OS)")
-	showVersion := flag.Bool("version", false, "print version and exit")
-	flag.Parse()
-
-	if *showVersion {
+	if len(args) >= 1 && (args[0] == "-version" || args[0] == "--version") {
 		fmt.Println(version)
 		return
 	}
+
+	if len(args) < 1 || args[0] != "backup" {
+		usage()
+		os.Exit(2)
+	}
+
+	fs := flag.NewFlagSet("backup", flag.ExitOnError)
+	fs.Usage = func() {
+		usage()
+		fs.PrintDefaults()
+	}
+	out := fs.String("out", "backup", "output directory for archives; created on first run, reused afterward (relative to cwd)")
+	cursorUser := fs.String("cursor-user", "", "path to Cursor User directory (default: standard location for this OS)")
+	_ = fs.Parse(args[1:])
 
 	root := *cursorUser
 	if root == "" {
