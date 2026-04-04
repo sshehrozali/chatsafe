@@ -1,0 +1,55 @@
+#!/bin/sh
+# One-shot install: download latest chatsafe, put it in ~/.local/bin, add that dir to PATH in your shell rc.
+set -e
+
+BIN_DIR="${BIN_DIR:-$HOME/.local/bin}"
+mkdir -p "$BIN_DIR"
+
+case $(uname -s) in
+Darwin) os=darwin ;;
+Linux) os=linux ;;
+*)
+	echo "install.sh: use PowerShell on Windows:" >&2
+	echo '  irm https://raw.githubusercontent.com/sshehrozali/chatsafe/main/install.ps1 | iex' >&2
+	exit 1
+	;;
+esac
+
+case $(uname -m) in
+x86_64 | amd64) arch=amd64 ;;
+arm64 | aarch64) arch=arm64 ;;
+*)
+	echo "install.sh: unsupported CPU ($(uname -m))." >&2
+	exit 1
+	;;
+esac
+
+URL="https://github.com/sshehrozali/chatsafe/releases/latest/download/chatsafe-${os}-${arch}.tar.gz"
+echo "Downloading ${URL} ..."
+curl -fsSL "$URL" -o "$BIN_DIR/chatsafe.tgz"
+tar -xzf "$BIN_DIR/chatsafe.tgz" -C "$BIN_DIR"
+rm -f "$BIN_DIR/chatsafe.tgz"
+chmod +x "$BIN_DIR/chatsafe"
+
+if [ -f "$HOME/.zshrc" ]; then
+	rc="$HOME/.zshrc"
+elif [ -f "$HOME/.bashrc" ]; then
+	rc="$HOME/.bashrc"
+else
+	rc="$HOME/.profile"
+	touch "$rc"
+fi
+
+if ! grep -q '# chatsafe PATH' "$rc" 2>/dev/null; then
+	{
+		echo ""
+		echo "# chatsafe PATH"
+		echo "export PATH=\"$BIN_DIR:\$PATH\""
+	} >>"$rc"
+	echo "Added $BIN_DIR to PATH in $rc"
+else
+	echo "PATH already configured for chatsafe in $rc (skipped duplicate line)"
+fi
+
+echo ""
+echo "Done. Open a new terminal (or: source $rc), then run: chatsafe -version"
