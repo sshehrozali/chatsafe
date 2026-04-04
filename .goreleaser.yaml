@@ -27,8 +27,19 @@ builds:
 
 archives:
   - id: default
+    builds:
+      - chatsafe
     format: tar.gz
     name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+    format_overrides:
+      - goos: windows
+        format: zip
+  # Stable names so https://github.com/.../releases/latest/download/... works in README.
+  - id: stable
+    builds:
+      - chatsafe
+    format: tar.gz
+    name_template: "{{ .ProjectName }}-{{ .Os }}-{{ .Arch }}"
     format_overrides:
       - goos: windows
         format: zip
