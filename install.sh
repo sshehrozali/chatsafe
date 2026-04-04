@@ -82,4 +82,9 @@ else
 fi
 
 echo ""
-echo "Done. Open a new terminal (or: source $rc), then run: chatsafe -version"
+echo "Done."
+echo ""
+echo "This terminal still has the old PATH. Do one of:"
+echo "  1) source $rc && chatsafe -version"
+echo "  2) Open a new terminal, then: chatsafe -version"
+echo "  3) Run now without PATH: $BIN_DIR/chatsafe -version"

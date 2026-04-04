@@ -20,7 +20,16 @@ curl -fsSL https://raw.githubusercontent.com/sshehrozali/chatsafe/main/install.s
 irm https://raw.githubusercontent.com/sshehrozali/chatsafe/main/install.ps1 | iex
 ```
 
-Then **open a new terminal** and check: `chatsafe -version` (Windows: `chatsafe.exe -version`).
+Reload your shell config (same window) **or** open a new terminal, then check:
+
+```bash
+source ~/.zshrc   # zsh — use ~/.bashrc if you use bash
+chatsafe -version
+```
+
+Until you do that, `chatsafe` is not on `PATH` in this session. You can always run `~/.local/bin/chatsafe -version` right away.
+
+Windows: open a **new** PowerShell, then `chatsafe.exe -version`.
 
 Optional custom folder (macOS/Linux):  
 `curl -fsSL https://raw.githubusercontent.com/sshehrozali/chatsafe/main/install.sh | env BIN_DIR="$HOME/my/bin" sh`
