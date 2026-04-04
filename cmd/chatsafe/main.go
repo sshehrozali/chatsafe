@@ -21,24 +21,34 @@ func defaultCursorUser() string {
 	if err != nil {
 		return ""
 	}
-	return filepath.Join(home, "Library", "Application Support", "Cursor", "User")
+	switch runtime.GOOS {
+	case "darwin":
+		return filepath.Join(home, "Library", "Application Support", "Cursor", "User")
+	case "windows":
+		if appData := os.Getenv("APPDATA"); appData != "" {
+			return filepath.Join(appData, "Cursor", "User")
+		}
+		return ""
+	default:
+		// Linux and other Unix-like systems
+		if xdg := os.Getenv("XDG_CONFIG_HOME"); xdg != "" {
+			return filepath.Join(xdg, "Cursor", "User")
+		}
+		return filepath.Join(home, ".config", "Cursor", "User")
+	}
 }
 
 func main() {
 	log.SetFlags(0)
 
 	out := flag.String("out", "backup", "output directory for archives; created on first run, reused afterward (relative to cwd)")
-	cursorUser := flag.String("cursor-user", "", "path to Cursor User directory (default: ~/Library/Application Support/Cursor/User)")
+	cursorUser := flag.String("cursor-user", "", "path to Cursor User directory (default: standard location for this OS)")
 	showVersion := flag.Bool("version", false, "print version and exit")
 	flag.Parse()
 
 	if *showVersion {
 		fmt.Println(version)
 		return
-	}
-
-	if runtime.GOOS != "darwin" {
-		log.Fatal("chatsafe: backup is supported on macOS only (Cursor paths are platform-specific).")
 	}
 
 	root := *cursorUser
