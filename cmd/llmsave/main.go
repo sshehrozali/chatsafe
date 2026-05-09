@@ -1,4 +1,4 @@
-// Chatsafe backs up Cursor IDE user data (workspaceStorage, settings, etc.) into a single timestamped .tar.gz.
+// llmsave backs up Cursor IDE user data (workspaceStorage, settings, etc.) into a single timestamped .tar.gz.
 package main
 
 import (
@@ -10,7 +10,7 @@ import (
 	"runtime"
 	"time"
 
-	"github.com/sshehrozali/chatsafe/internal/pack"
+	"github.com/sshehrozali/llmsave/internal/pack"
 )
 
 // version is set at link time by GoReleaser (-X main.version=...).
@@ -38,8 +38,8 @@ func defaultCursorUser() string {
 }
 
 func usage() {
-	fmt.Fprintln(os.Stderr, "usage: chatsafe backup [-out dir] [-cursor-user path]")
-	fmt.Fprintln(os.Stderr, "       chatsafe -version")
+	fmt.Fprintln(os.Stderr, "usage: llmsave backup [-out dir] [-cursor-user path]")
+	fmt.Fprintln(os.Stderr, "       llmsave -version")
 }
 
 func main() {
@@ -70,19 +70,19 @@ func main() {
 		root = defaultCursorUser()
 	}
 	if root == "" {
-		log.Fatal("chatsafe: could not resolve default Cursor User path")
+		log.Fatal("llmsave: could not resolve default Cursor User path")
 	}
 
 	stopSpinner := startSpinner("Creating backup…")
 	archivePath, err := pack.Pack(root, *out)
 	stopSpinner()
 	if err != nil {
-		log.Fatalf("chatsafe: %v", err)
+		log.Fatalf("llmsave: %v", err)
 	}
 
 	fi, err := os.Stat(archivePath)
 	if err != nil {
-		log.Fatalf("chatsafe: stat archive: %v", err)
+		log.Fatalf("llmsave: stat archive: %v", err)
 	}
 
 	fmt.Printf("backup written: %s (%d bytes)\n", archivePath, fi.Size())

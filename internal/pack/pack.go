@@ -1,4 +1,4 @@
-// Package pack writes Chatsafe gzip-tar archives of Cursor's User directory (see chatsafe/cmd/chatsafe).
+// Package pack writes llmsave gzip-tar archives of Cursor's User directory (see llmsave/cmd/llmsave).
 package pack
 
 import (
@@ -22,9 +22,9 @@ var CursorUserEntries = []string{
 	"keybindings.json",
 }
 
-// Pack writes a Chatsafe gzip-compressed tar of the given entries under cursorUserRoot into outDir.
+// Pack writes a llmsave gzip-compressed tar of the given entries under cursorUserRoot into outDir.
 // outDir is created with MkdirAll if missing; later runs can reuse the same directory for more archives.
-// The archive is named cursor-backup_YYYYMMDD_HHMMSS.tar.gz.
+// The archive is named llmsave-backup_YYYYMMDD_HHMMSS.tar.gz.
 // Missing paths are skipped. Returns an error if nothing was archived.
 func Pack(cursorUserRoot, outDir string) (archivePath string, err error) {
 	cursorUserRoot = filepath.Clean(cursorUserRoot)
@@ -33,7 +33,7 @@ func Pack(cursorUserRoot, outDir string) (archivePath string, err error) {
 	}
 
 	ts := time.Now().Format("20060102_150405")
-	baseName := fmt.Sprintf("cursor-backup_%s.tar.gz", ts)
+	baseName := fmt.Sprintf("llmsave-backup_%s.tar.gz", ts)
 	archivePath = filepath.Join(outDir, baseName)
 
 	f, err := os.Create(archivePath)
@@ -168,7 +168,7 @@ func addFile(tw *tar.Writer, arcName, absPath string, info fs.FileInfo) error {
 	return nil
 }
 
-// ListTopLevelNames returns the set of top-level path names inside a cursor-backup_*.tar.gz file.
+// ListTopLevelNames returns the set of top-level path names inside a llmsave-backup_*.tar.gz file.
 func ListTopLevelNames(archivePath string) (map[string]struct{}, error) {
 	f, err := os.Open(archivePath)
 	if err != nil {

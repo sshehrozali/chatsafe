@@ -1,4 +1,4 @@
-// Tests for Chatsafe pack archives (no real Cursor install required).
+// Tests for llmsave pack archives (no real Cursor install required).
 package pack
 
 import (
@@ -26,7 +26,7 @@ func TestPack_CreatesArchiveWithExpectedTopLevel(t *testing.T) {
 		t.Fatalf("Pack: %v", err)
 	}
 
-	matches, err := filepath.Glob(filepath.Join(outDir, "cursor-backup_*.tar.gz"))
+	matches, err := filepath.Glob(filepath.Join(outDir, "llmsave-backup_*.tar.gz"))
 	if err != nil {
 		t.Fatal(err)
 	}
