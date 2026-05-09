@@ -1,15 +1,15 @@
 version: 2
 
-project_name: chatsafe
+project_name: llmsave
 
 before:
   hooks:
     - go mod tidy
 
 builds:
-  - id: chatsafe
-    main: ./cmd/chatsafe
-    binary: chatsafe
+  - id: llmsave
+    main: ./cmd/llmsave
+    binary: llmsave
     env:
       - CGO_ENABLED=0
     goos:
@@ -28,7 +28,7 @@ builds:
 archives:
   - id: default
     builds:
-      - chatsafe
+      - llmsave
     format: tar.gz
     name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
     format_overrides:
@@ -37,7 +37,7 @@ archives:
   # Stable names so https://github.com/.../releases/latest/download/... works in README.
   - id: stable
     builds:
-      - chatsafe
+      - llmsave
     format: tar.gz
     name_template: "{{ .ProjectName }}-{{ .Os }}-{{ .Arch }}"
     format_overrides:

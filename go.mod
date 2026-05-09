@@ -1,3 +1,3 @@
-module github.com/sshehrozali/chatsafe
+module github.com/sshehrozali/llmsave
 
 go 1.22

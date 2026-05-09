@@ -1,24 +1,24 @@
-# One-shot install: download latest chatsafe, put it in ~\bin, add to user PATH.
+# One-shot install: download latest llmsave, put it in ~\bin, add to user PATH.
 $ErrorActionPreference = "Stop"
 
 $BinDir = Join-Path $HOME "bin"
 New-Item -ItemType Directory -Force -Path $BinDir | Out-Null
 
-$Zip = Join-Path $BinDir "chatsafe.zip"
+$Zip = Join-Path $BinDir "llmsave.zip"
 
 Write-Host "Fetching latest release for windows/amd64..."
-$headers = @{ "User-Agent" = "chatsafe-install" }
+$headers = @{ "User-Agent" = "llmsave-install" }
 if ($env:GITHUB_TOKEN) {
     $headers["Authorization"] = "Bearer $($env:GITHUB_TOKEN)"
 }
-$rel = Invoke-RestMethod -Uri "https://api.github.com/repos/sshehrozali/chatsafe/releases/latest" -Headers $headers
+$rel = Invoke-RestMethod -Uri "https://api.github.com/repos/sshehrozali/llmsave/releases/latest" -Headers $headers
 
-$asset = $rel.assets | Where-Object { $_.name -eq "chatsafe-windows-amd64.zip" } | Select-Object -First 1
+$asset = $rel.assets | Where-Object { $_.name -eq "llmsave-windows-amd64.zip" } | Select-Object -First 1
 if (-not $asset) {
-    $asset = $rel.assets | Where-Object { $_.name -match '^chatsafe_[0-9.]+_windows_amd64\.zip$' } | Select-Object -First 1
+    $asset = $rel.assets | Where-Object { $_.name -match '^llmsave_[0-9.]+_windows_amd64\.zip$' } | Select-Object -First 1
 }
 if (-not $asset) {
-    throw "No Windows amd64 zip in latest release. See https://github.com/sshehrozali/chatsafe/releases"
+    throw "No Windows amd64 zip in latest release. See https://github.com/sshehrozali/llmsave/releases"
 }
 
 Write-Host "Downloading..."
@@ -36,5 +36,5 @@ if ($UserPath -notlike "*$BinDir*") {
 }
 
 Write-Host ""
-Write-Host "Done. Open a new PowerShell window, then run: chatsafe.exe -version"
-Write-Host "Create a backup: chatsafe backup"
+Write-Host "Done. Open a new PowerShell window, then run: llmsave.exe -version"
+Write-Host "Create a backup: llmsave backup"
