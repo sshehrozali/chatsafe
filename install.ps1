@@ -18,6 +18,12 @@ if (-not $asset) {
     $asset = $rel.assets | Where-Object { $_.name -match '^llmsave_[0-9.]+_windows_amd64\.zip$' } | Select-Object -First 1
 }
 if (-not $asset) {
+    $asset = $rel.assets | Where-Object { $_.name -eq "chatsafe-windows-amd64.zip" } | Select-Object -First 1
+}
+if (-not $asset) {
+    $asset = $rel.assets | Where-Object { $_.name -match '^chatsafe_[0-9.]+_windows_amd64\.zip$' } | Select-Object -First 1
+}
+if (-not $asset) {
     throw "No Windows amd64 zip in latest release. See https://github.com/sshehrozali/llmsave/releases"
 }
 
@@ -26,6 +32,15 @@ Invoke-WebRequest -Uri $asset.browser_download_url -OutFile $Zip
 
 Expand-Archive -Path $Zip -DestinationPath $BinDir -Force
 Remove-Item $Zip
+
+$exe = Join-Path $BinDir "llmsave.exe"
+$legacy = Join-Path $BinDir "chatsafe.exe"
+if (-not (Test-Path $exe) -and (Test-Path $legacy)) {
+    Move-Item -Force $legacy $exe
+}
+if (-not (Test-Path $exe)) {
+    throw "Extracted archive did not contain llmsave.exe or chatsafe.exe"
+}
 
 $UserPath = [Environment]::GetEnvironmentVariable("Path", "User")
 if ($UserPath -notlike "*$BinDir*") {

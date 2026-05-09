@@ -42,10 +42,16 @@ else
 		"$GH_API")
 fi
 
-# Prefer stable asset name, else versioned llmsave_X.Y.Z_os_arch.tar.gz
+# Prefer llmsave asset names; fall back to chatsafe (releases cut before rename still use chatsafe-*).
 URL=$(printf '%s' "$JSON" | tr '"' '\n' | grep -E '^https://github\.com/.*llmsave-'"${os}"'-'"${arch}"'\.tar\.gz$' | head -n 1)
 if [ -z "$URL" ]; then
 	URL=$(printf '%s' "$JSON" | tr '"' '\n' | grep -E '^https://github\.com/.*llmsave_[^_]+_'"${os}"'_'"${arch}"'\.tar\.gz$' | head -n 1)
+fi
+if [ -z "$URL" ]; then
+	URL=$(printf '%s' "$JSON" | tr '"' '\n' | grep -E '^https://github\.com/.*chatsafe-'"${os}"'-'"${arch}"'\.tar\.gz$' | head -n 1)
+fi
+if [ -z "$URL" ]; then
+	URL=$(printf '%s' "$JSON" | tr '"' '\n' | grep -E '^https://github\.com/.*chatsafe_[^_]+_'"${os}"'_'"${arch}"'\.tar\.gz$' | head -n 1)
 fi
 if [ -z "$URL" ]; then
 	echo "install.sh: no ${os}/${arch} .tar.gz in latest release." >&2
@@ -59,7 +65,15 @@ curl -fsSL "$URL" -o "$OUT"
 
 tar -xzf "$BIN_DIR/llmsave.tgz" -C "$BIN_DIR"
 rm -f "$BIN_DIR/llmsave.tgz"
-chmod +x "$BIN_DIR/llmsave"
+if [ -f "$BIN_DIR/llmsave" ]; then
+	chmod +x "$BIN_DIR/llmsave"
+elif [ -f "$BIN_DIR/chatsafe" ]; then
+	mv -f "$BIN_DIR/chatsafe" "$BIN_DIR/llmsave"
+	chmod +x "$BIN_DIR/llmsave"
+else
+	echo "install.sh: archive did not contain llmsave or chatsafe binary" >&2
+	exit 1
+fi
 
 if [ -f "$HOME/.zshrc" ]; then
 	rc="$HOME/.zshrc"
@@ -70,7 +84,7 @@ else
 	touch "$rc"
 fi
 
-if ! grep -q '# llmsave PATH' "$rc" 2>/dev/null; then
+if ! grep -qE '# (llmsave|chatsafe) PATH' "$rc" 2>/dev/null; then
 	{
 		echo ""
 		echo "# llmsave PATH"
