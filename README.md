@@ -1,4 +1,4 @@
-# llmsave
+# llmsave 💾
 
 **Back up your LLM memory**—chats, workspace storage, and IDE state—into a single dated `.tar.gz`. One command, predictable archives, full control over where they land.
 
