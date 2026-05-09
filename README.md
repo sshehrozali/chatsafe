@@ -1,12 +1,17 @@
 # Chatsafe
 
-Back up Cursor to a dated archive on disk—one command, one `.tar.gz` in a folder you choose.
+**Back up your LLM memory**—chats, workspace storage, and IDE state—into a single dated `.tar.gz`. One command, predictable archives, full control over where they land.
+
+Use it to **protect context** before an OS reinstall, **snapshot** a project era, **move machines**, or keep an **offline copy** of what your assistant “remembers” on disk.
 
 **Portable:** install once with the command below; **`chatsafe`** lands on your **`PATH`** so you can run it from **any directory**.
 
-**Before you run:** quit Cursor so files aren’t locked.
+**Supported IDEs**
 
-<h3>🚀 <strong>Claude support upcoming</strong> — <em>coming soon</em> 🤖 🔜</h3>
+- **Cursor** — supported
+- **Claude** — coming soon
+
+**Before you run:** quit your **IDE** so databases and files are not locked mid-backup.
 
 ## Install (one command)
 
@@ -46,7 +51,7 @@ Backups run only when you pass the **`backup`** subcommand:
 chatsafe backup
 ```
 
-Creates `backup/cursor-backup_YYYYMMDD_HHMMSS.tar.gz` in your **current working directory** (the `backup` folder is created if needed).
+Writes `backup/cursor-backup_YYYYMMDD_HHMMSS.tar.gz` under your **current working directory** (the `backup` folder is created if needed). That archive holds the **LLM IDE user data tree** Chatsafe packages from your machine (naming stays `cursor-backup_*` for compatibility).
 
 ### Examples
 
@@ -58,19 +63,19 @@ chatsafe backup
 
 ```bash
 # Save archives somewhere fixed (folder is created if needed)
-chatsafe backup -out ~/Documents/cursor-backups
+chatsafe backup -out ~/Documents/llm-backups
 ```
 
 ```bash
-# Cursor data lives somewhere non-standard—point at the User folder explicitly
+# LLM IDE data lives somewhere non-standard—point at the User folder explicitly
 chatsafe backup -cursor-user "/path/to/Cursor/User"
 ```
 
 | Command / flag | What it does |
 |----------------|--------------|
-| `chatsafe backup` | Create a timestamped archive |
+| `chatsafe backup` | Create a timestamped archive of LLM IDE user data |
 | `-out dir` | Where to save archives (default: `backup`, relative to cwd) |
-| `-cursor-user path` | Override if Cursor’s data isn’t in the usual place on your system |
+| `-cursor-user path` | Override the **Cursor** `User` directory if yours is not in the usual OS location |
 | `chatsafe -version` | Print version (no `backup` needed) |
 
 Running `chatsafe` with no arguments prints a short usage message and exits.
