@@ -6,6 +6,8 @@ Back up Cursor to a dated archive on disk—one command, one `.tar.gz` in a fold
 
 **Before you run:** quit Cursor so files aren’t locked.
 
+<h3 align="center">🚀 <strong>Claude support upcoming</strong> — <em>coming soon</em> 🤖 🔜</h3>
+
 ## Install (one command)
 
 **macOS / Linux** — installs to `~/.local/bin` and adds it to your shell config (`~/.zshrc`, `~/.bashrc`, or `~/.profile`):
